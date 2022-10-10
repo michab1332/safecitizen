@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import authRouters from "./routes/auth.js"
 
 const app = express();
 dotenv.config();
@@ -12,6 +13,8 @@ const connect = () => {
         })
         .catch(err => { throw err })
 }
+
+app.use("/api/auth", authRouters);
 
 app.listen(8800, () => {
     console.log("connected to server");

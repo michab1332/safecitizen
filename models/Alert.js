@@ -28,3 +28,5 @@ const AlertSchema = new mongoose.Schema({
         required: true
     }
 });
+
+export default mongoose.model("Alert", AlertSchema, "alerts");
