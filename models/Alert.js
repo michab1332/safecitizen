@@ -26,6 +26,10 @@ const AlertSchema = new mongoose.Schema({
     userId: {
         type: String,
         required: true
+    },
+    img: {
+        type: String,
+        default: "noPhoto"
     }
 });
 
