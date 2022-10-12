@@ -30,3 +30,12 @@ export const deleteAlert = async (req, res, next) => {
         next(err);
     }
 }
+
+export const getAlert = async (req, res, next) => {
+    try {
+        const alert = await Alert.findById(req.params.id);
+        res.status(200).json(alert);
+    } catch (err) {
+        next(err);
+    }
+}
