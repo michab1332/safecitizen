@@ -39,3 +39,18 @@ export const getAlert = async (req, res, next) => {
         next(err);
     }
 }
+
+export const getAlertsByAdress = async (req, res, next) => {
+    const query = req.query.q;
+    try {
+        const alerts = await Alert.find({
+            'location.adress': {
+                $regex: query,
+                $options: "i"
+            }
+        }).limit(40);
+        res.status(200).json(alerts);
+    } catch (err) {
+        next(err);
+    }
+}
