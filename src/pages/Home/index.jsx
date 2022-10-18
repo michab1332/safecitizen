@@ -14,6 +14,21 @@ const Home = () => {
         longitude: 18.578888,
         zoom: 12,
     })
+    const [currentCity, setCurrentCity] = useState({});
+
+    const handleOnItemClick = (data) => {
+        setCurrentCity(data);
+    }
+
+    useEffect(() => {
+        if (Object.keys(currentCity).length !== 0) {
+            setViewState(prevState => ({
+                ...prevState,
+                latitude: currentCity.center[1],
+                longitude: currentCity.center[0]
+            }))
+        }
+    }, [currentCity]);
 
     return <div className="homeContainer">
         <header>
@@ -30,8 +45,9 @@ const Home = () => {
             mapStyle="mapbox://styles/mapbox/streets-v9"
             onMove={evt => setViewState(evt.viewState)}
             mapboxAccessToken={ACCESS_TOKEN}
-        />
-        <SearchModel />
+        >
+        </Map>
+        <SearchModel handleOnItemClick={handleOnItemClick} />
     </div>
 }
 
