@@ -3,7 +3,8 @@ import Map from "react-map-gl";
 import axios from "axios";
 
 import SearchModel from "../../components/Map/SearchModel";
-import MarkerItem from "../../components/Map/Marker/MarkerItem";
+import MarkerItem from "../../components/Map/Marker";
+import PopupModal from "../../components/Map/Popup";
 
 import Burger from "../../assets/burger.svg";
 
@@ -22,6 +23,8 @@ const Home = () => {
         data: [],
     });
     const [currentCity, setCurrentCity] = useState({});
+    const [currentAlert, setCurrentAlert] = useState({});
+    const [showPopup, setShowPopup] = useState(false);
 
     const handleOnItemClick = (data) => {
         setCurrentCity(data);
@@ -48,6 +51,21 @@ const Home = () => {
             })
             .catch(err => { throw err })
     }
+
+    const handleSetCurrentAlertOnMarkerClick = (alert) => {
+        setCurrentAlert(alert);
+    }
+
+    const onClosePopup = () => {
+        setCurrentAlert({});
+        setShowPopup(false);
+    }
+
+    useEffect(() => {
+        if (Object.keys(currentAlert).length !== 0) {
+            setShowPopup(true);
+        }
+    }, [currentAlert])
 
     useEffect(() => {
         if (Object.keys(currentCity).length !== 0) {
@@ -80,8 +98,13 @@ const Home = () => {
             mapboxAccessToken={ACCESS_TOKEN}
         >
             {[...alerts.data].map(item => (
-                <MarkerItem key={item._id} title={item.title} lon={item.location.longitude} lat={item.location.latitude} />
+                <MarkerItem key={item._id} onClick={() => handleSetCurrentAlertOnMarkerClick(item)} title={item.title} lon={item.location.longitude} lat={item.location.latitude} />
             ))}
+            {
+                showPopup && (
+                    <PopupModal data={currentAlert} onClosePopup={onClosePopup} />
+                )
+            }
         </Map>
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
     </div>
