@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import SearchIcon from "../../../assets/searchIcon.svg";
+import LocationIcon from "../../../assets/locationIcon.svg";
 
 import "./searchModel.css";
 
@@ -9,7 +9,7 @@ const Item = ({ data, onClick }) => {
     return <li onClick={() => onClick(data)} className="searchContainer-result">{data.place_name}</li>
 }
 
-const SearchModel = ({ handleOnItemClick }) => {
+const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     const [city, setCity] = useState("");
     const [response, setResponse] = useState({
         data: [],
@@ -39,8 +39,8 @@ const SearchModel = ({ handleOnItemClick }) => {
             <div className="searchContainer-top"></div>
             <form className="searchContainer-form">
                 <input value={city} onChange={e => setCity(e.target.value)} type="text" placeholder="search city" className="searchContainer-text" />
-                <button className="searchContainer-button">
-                    <img src={SearchIcon} alt="search_icon" />
+                <button onClick={(e) => handleOnLocationButtonClick(e)} className="searchContainer-button">
+                    <img src={LocationIcon} alt="search_icon" />
                 </button>
             </form>
             <ul className="searchContainer-results">
