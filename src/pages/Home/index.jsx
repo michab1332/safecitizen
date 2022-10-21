@@ -10,6 +10,7 @@ import Menu from "./menu";
 import Burger from "../../assets/burger.svg";
 
 import "./home.css";
+import { useSelector } from "react-redux";
 
 const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -27,6 +28,8 @@ const Home = () => {
     const [currentAlert, setCurrentAlert] = useState({});
     const [showPopup, setShowPopup] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const { user } = useSelector(state => state.user);
+
 
     const handleChangeVisibleOnClick = (e) => {
         e.preventDefault();
