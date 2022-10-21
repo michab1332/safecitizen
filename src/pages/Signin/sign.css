@@ -1,0 +1,42 @@
+.signContainer {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--second-background-color) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signContainer__text {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.signContainer__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: #F4F1DE;
+    padding: 4rem 1rem;
+    border-radius: 20px;
+    align-items: center;
+}
+
+.signcontainer__input {
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border-radius: 50px;
+    border: 1px var(--text-color) solid;
+}
+
+.signcontainer__input::placeholder {
+    color: var(--text-color);
+}
+
+.signContainer__button {
+    padding: .5rem 1rem;
+    background-color: var(--text-color);
+    color: #fff;
+    border-radius: 50px;
+    border: none;
+}

@@ -5,6 +5,7 @@ import axios from "axios";
 import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
 import PopupModal from "../../components/Map/Popup";
+import Menu from "./menu";
 
 import Burger from "../../assets/burger.svg";
 
@@ -25,6 +26,12 @@ const Home = () => {
     const [currentCity, setCurrentCity] = useState({});
     const [currentAlert, setCurrentAlert] = useState({});
     const [showPopup, setShowPopup] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+
+    const handleChangeVisibleOnClick = (e) => {
+        e.preventDefault();
+        setIsVisible(prevState => !prevState);
+    }
 
     const handleOnItemClick = (data) => {
         setCurrentCity(data);
@@ -86,7 +93,7 @@ const Home = () => {
             <div className="header-logo">
                 <p className="header-text">Safecitizen</p>
             </div>
-            <div className="header-burger">
+            <div onClick={e => handleChangeVisibleOnClick(e)} className="header-burger">
                 <img src={Burger} alt="burger" />
             </div>
         </header>
@@ -107,6 +114,7 @@ const Home = () => {
             }
         </Map>
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
+        <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
     </div>
 }
 
