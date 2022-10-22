@@ -25,10 +25,10 @@ const Signin = () => {
     const handleSignin = (e) => {
         e.preventDefault();
         dispatch(loginStart());
-        axios.post("http://localhost:8800/api/auth/signin", {
+        axios.post("/auth/signin", {
             name: state.name,
             password: state.password
-        }).then((response) => {
+        }, { credentials: true }).then((response) => {
             dispatch(loginSuccess(response.data));
         }).catch(err => {
             dispatch(loginFailure());

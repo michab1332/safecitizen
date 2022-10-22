@@ -45,3 +45,18 @@ header {
 .header-burger img {
     width: 50%;
 }
+
+.homeContainer__addAlertButton {
+    position: absolute;
+    top: 85%;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: .5rem 1rem;
+    background-color: var(--text-color);
+    color: #fff;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+
+}

@@ -6,6 +6,7 @@ import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
 import PopupModal from "../../components/Map/Popup";
 import Menu from "./menu";
+import NewAlertModal from "../../components/Map/NewAlertModal";
 
 import Burger from "../../assets/burger.svg";
 
@@ -28,8 +29,33 @@ const Home = () => {
     const [currentAlert, setCurrentAlert] = useState({});
     const [showPopup, setShowPopup] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [isAddAlertButtonClicked, setIsAddAlertButtonClicked] = useState(false);
+    const [newAlert, setNewAlert] = useState({
+        location: null,
+    });
     const { user } = useSelector(state => state.user);
 
+    const handleAddAlertButtonOnClick = (e) => {
+        e.preventDefault();
+        setIsAddAlertButtonClicked(prevState => !prevState);
+    }
+
+    const handleOnMapClick = (e) => {
+        setNewAlert(prevState => ({
+            location: {
+                latitude: e.lngLat.lat,
+                longitude: e.lngLat.lng
+            }
+        }));
+    }
+
+    useEffect(() => {
+        if (!isAddAlertButtonClicked) {
+            setNewAlert({
+                location: null,
+            });
+        }
+    }, [isAddAlertButtonClicked]);
 
     const handleChangeVisibleOnClick = (e) => {
         e.preventDefault();
@@ -52,7 +78,7 @@ const Home = () => {
     }
 
     const getAlerts = () => {
-        axios.get("http://localhost:8800/api/alert/all")
+        axios.get("/alert/all")
             .then(response => {
                 setAlerts({
                     loading: false,
@@ -106,6 +132,7 @@ const Home = () => {
             mapStyle="mapbox://styles/mapbox/streets-v9"
             onMove={evt => setViewState(evt.viewState)}
             mapboxAccessToken={ACCESS_TOKEN}
+            onClick={isAddAlertButtonClicked ? handleOnMapClick : null}
         >
             {[...alerts.data].map(item => (
                 <MarkerItem key={item._id} onClick={() => handleSetCurrentAlertOnMarkerClick(item)} title={item.title} lon={item.location.longitude} lat={item.location.latitude} />
@@ -116,6 +143,9 @@ const Home = () => {
                 )
             }
         </Map>
+        {user && (<button onClick={handleAddAlertButtonOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
+        {user ? (newAlert.location && <NewAlertModal userId={user._id} location={newAlert.location} />) : null}
+
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
         <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
     </div>
