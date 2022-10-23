@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const AlertSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 20
     },
     description: {
         type: String,
@@ -20,7 +21,6 @@ const AlertSchema = new mongoose.Schema({
         },
         adress: {
             type: String,
-            required: true
         }
     },
     userId: {
@@ -31,6 +31,6 @@ const AlertSchema = new mongoose.Schema({
         type: String,
         default: "noPhoto"
     }
-});
+}, { timestamps: true });
 
 export default mongoose.model("Alert", AlertSchema, "alerts");

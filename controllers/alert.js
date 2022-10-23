@@ -54,3 +54,12 @@ export const getAlertsByAdress = async (req, res, next) => {
         next(err);
     }
 }
+
+export const getAlerts = async (req, res, next) => {
+    try {
+        const alerts = await Alert.find();
+        res.status(200).json(alerts);
+    } catch (err) {
+        next(err);
+    }
+}
