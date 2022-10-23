@@ -28,6 +28,9 @@ export const signin = async (req, res, next) => {
         const { password, ...others } = user._doc;
 
         res.cookie("access_token", token, {
+            sameSite: "none",
+            secure: true,
+            domain: "https://safecitizen-server.herokuapp.com/",
             httpOnly: true
         })
             .status(200)
