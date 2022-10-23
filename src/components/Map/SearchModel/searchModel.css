@@ -27,6 +27,7 @@
     justify-content: space-between;
     border-radius: 50px;
     width: 80%;
+    max-width: 340px;
     padding: .4rem .5rem;
     margin-top: 1rem;
 }
@@ -36,7 +37,7 @@
     outline: none;
     border: none;
     color: var(--text-color);
-
+    width: 100%;
 }
 
 .searchContainer-button {
@@ -50,6 +51,7 @@
 
 .searchContainer-results {
     width: 80%;
+    max-width: 340px;
     list-style: none;
     margin-top: 1rem;
 }

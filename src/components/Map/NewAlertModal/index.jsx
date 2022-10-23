@@ -16,13 +16,15 @@ const NewAlertModal = ({ location, userId, handleCloseAfterCreate }) => {
     }
 
     const handleCreateNewAlert = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const res = await axios.post("/alert/add", {
             title: state.title,
             description: state.description,
             location: location,
             userId: userId
         })
+        console.log(res)
+        // handleCloseAfterCreate(e);
     }
 
     return (
@@ -31,7 +33,7 @@ const NewAlertModal = ({ location, userId, handleCloseAfterCreate }) => {
             <form className="newAlertModalContainer__form" onSubmit={handleCreateNewAlert}>
                 <input type="text" onChange={handleOnInputChange} className="newAlertModalContainer__input" placeholder="Tytuł" name="title" />
                 <input type="text" onChange={handleOnInputChange} className="newAlertModalContainer__input" placeholder="Opis sytuacji" name="description" />
-                <button onClick={handleCloseAfterCreate} className="newAlertModalContainer__button">Dodaj</button>
+                <button className="newAlertModalContainer__button">Dodaj</button>
             </form>
         </div>
     );

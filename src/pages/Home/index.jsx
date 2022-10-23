@@ -7,6 +7,7 @@ import MarkerItem from "../../components/Map/Marker";
 import PopupModal from "../../components/Map/Popup";
 import Menu from "./Menu";
 import NewAlertModal from "../../components/Map/NewAlertModal";
+import InfoModal from "../../components/InfoModal";
 
 import Burger from "../../assets/burger.svg";
 
@@ -149,6 +150,8 @@ const Home = () => {
         </Map>
         {user && (<button onClick={handleAddAlertButtonOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
         {user ? (newAlert.location && <NewAlertModal handleCloseAfterCreate={handleAddAlertButtonOnClick} userId={user._id} location={newAlert.location} />) : null}
+        {isAddAlertButtonClicked && <InfoModal info="Klinkij w miejsce zgłoszenia" />}
+
 
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
         <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
