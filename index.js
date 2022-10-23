@@ -11,6 +11,8 @@ import cookieParser from "cookie-parser";
 const app = express();
 dotenv.config();
 
+const PORT = process.env.PORT || 8800;
+
 const connect = () => {
     mongoose.connect(process.env.MONGO)
         .then(() => {
@@ -36,7 +38,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(8800, () => {
+app.listen(PORT, () => {
     console.log("connected to server");
     connect();
 });
