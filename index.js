@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from 'url';
 
 import authRouters from "./routes/auth.js";
 import userRouters from "./routes/user.js";
@@ -22,10 +23,11 @@ const connect = () => {
         .catch(err => { throw err })
 }
 
-app.use(express.static(path.join(__dirname + "public")));
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '/public')));
+
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
