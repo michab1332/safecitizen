@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
+import path from "path";
 
 import authRouters from "./routes/auth.js";
 import userRouters from "./routes/user.js";
@@ -20,6 +21,8 @@ const connect = () => {
         })
         .catch(err => { throw err })
 }
+
+app.use(express.static(path.join(__dirname + "public")));
 
 app.use(cors());
 app.use(cookieParser());
