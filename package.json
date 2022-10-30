@@ -17,7 +17,8 @@
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "timeago.js": "^4.0.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "worker-loader": "^3.0.8"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,5 +44,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://safecitizen-server.herokuapp.com/api"
+  "proxy": "http://localhost:8800/api"
 }

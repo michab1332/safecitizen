@@ -5,7 +5,6 @@ import { logout } from "../../redux/userSlice";
 import XIcon from "../../assets/xIcon.svg";
 
 import "./menu.css";
-import { useEffect } from "react";
 
 const Menu = ({ isVisible, handleChangeVisibleOnClick }) => {
     const { user } = useSelector(state => state.user);

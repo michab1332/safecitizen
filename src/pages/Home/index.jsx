@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Map from "react-map-gl";
 import axios from "axios";
+import mapboxgl from "mapbox-gl";
+
 
 import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
@@ -15,7 +17,9 @@ import "./home.css";
 import { useSelector } from "react-redux";
 
 const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
-
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 const Home = () => {
     const [viewState, setViewState] = useState({
         latitude: 53.012918,

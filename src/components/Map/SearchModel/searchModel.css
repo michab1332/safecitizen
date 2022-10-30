@@ -47,6 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .searchContainer-results {
@@ -61,4 +62,5 @@
     margin-bottom: .5rem;
     padding: .8rem 1rem;
     border-radius: 1rem;
+    cursor: pointer;
 }
