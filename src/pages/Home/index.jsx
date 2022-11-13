@@ -40,7 +40,7 @@ const Home = () => {
     });
     const { user } = useSelector(state => state.user);
 
-    const handleAddAlertButtonOnClick = (e) => {
+    const handleAddAlertOnClick = (e) => {
         e.preventDefault();
         setIsAddAlertButtonClicked(prevState => !prevState);
     }
@@ -53,14 +53,6 @@ const Home = () => {
             }
         }));
     }
-
-    useEffect(() => {
-        if (!isAddAlertButtonClicked) {
-            setNewAlert({
-                location: null,
-            });
-        }
-    }, [isAddAlertButtonClicked]);
 
     const handleChangeVisibleOnClick = (e) => {
         e.preventDefault();
@@ -101,6 +93,14 @@ const Home = () => {
         setCurrentAlert({});
         setShowPopup(false);
     }
+
+    useEffect(() => {
+        if (!isAddAlertButtonClicked) {
+            setNewAlert({
+                location: null,
+            });
+        }
+    }, [isAddAlertButtonClicked]);
 
     useEffect(() => {
         if (Object.keys(currentAlert).length !== 0) {
@@ -152,8 +152,8 @@ const Home = () => {
                 )
             }
         </Map>
-        {user && (<button onClick={handleAddAlertButtonOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
-        {user ? (newAlert.location && <NewAlertModal handleCloseAfterCreate={handleAddAlertButtonOnClick} userId={user._id} location={newAlert.location} />) : null}
+        {user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
+        {user ? (newAlert.location && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={newAlert.location} />) : null}
         {isAddAlertButtonClicked && <InfoModal info="Klinkij w miejsce zgłoszenia" />}
 
 

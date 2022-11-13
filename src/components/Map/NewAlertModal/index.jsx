@@ -23,6 +23,7 @@ const NewAlertModal = ({ location, userId, handleCloseAfterCreate }) => {
             location: location,
             userId: userId
         })
+        handleCloseAfterCreate(e)
     }
 
     return (
