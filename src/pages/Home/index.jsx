@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Map, { Marker } from "react-map-gl";
+import Map from "react-map-gl";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
@@ -59,7 +59,7 @@ const Home = () => {
 
     const bounds = mapRef.current ? mapRef.current.getMap().getBounds().toArray().flat() : null;
 
-    const { clusters } = useSupercluster({
+    const { clusters, supercluster } = useSupercluster({
         points,
         zoom: viewState.zoom,
         bounds,
@@ -170,9 +170,6 @@ const Home = () => {
             onClick={isAddAlertButtonClicked ? handleOnMapClick : null}
             ref={mapRef}
         >
-            {/* {[...alerts.data].map(item => (
-                <MarkerItem key={item._id} onClick={() => handleSetCurrentAlertOnMarkerClick(item)} title={item.title} lon={item.location.longitude} lat={item.location.latitude} />
-            ))} */}
             {
                 clusters.map(cluster => {
                     const [longitude, latitude] = cluster.geometry.coordinates;
@@ -182,8 +179,14 @@ const Home = () => {
                     } = cluster.properties;
 
                     if (isCluster) {
+                        const size = `${20 + (pointCount / points.length) * 20}px`;
+                        const onMarkerClusterClick = () => {
+                            const expansionZoom = Math.min(supercluster.getClusterExpansionZoom(cluster.id), 20);
+                            mapRef.current?.flyTo({ center: [longitude, latitude], duration: 1500, zoom: expansionZoom });
+                        }
+
                         return (
-                            <MarkerCluster key={cluster.id} lat={latitude} lon={longitude} count={pointCount} />
+                            <MarkerCluster key={cluster.id} onMarkerClusterClick={onMarkerClusterClick} size={size} lat={latitude} lon={longitude} count={pointCount} />
                         );
                     }
 
