@@ -3,3 +3,15 @@
     flex-direction: column;
     align-items: center;
 }
+
+.markerCluster {
+    background-color: #6F9683;
+    color: #fff;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid #000;
+}
