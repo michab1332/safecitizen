@@ -86,17 +86,14 @@ const Home = () => {
     }
 
     const handleOnItemClick = (data) => {
+        console.log(data)
         setCurrentCity(data);
     }
 
     const handleOnLocationButtonClick = (e) => {
         e.preventDefault();
         navigator.geolocation.getCurrentPosition((position) => {
-            setViewState(prevState => ({
-                ...prevState,
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            }))
+            mapRef.current?.flyTo({ center: [position.coords.longitude, position.coords.latitude], duration: 1000, zoom: 14 });
         });
     }
 
@@ -135,13 +132,7 @@ const Home = () => {
     }, [currentAlert])
 
     useEffect(() => {
-        if (Object.keys(currentCity).length !== 0) {
-            setViewState(prevState => ({
-                ...prevState,
-                latitude: currentCity.center[1],
-                longitude: currentCity.center[0]
-            }))
-        }
+        mapRef.current?.flyTo({ center: [currentCity?.center[0], currentCity?.center[1]], duration: 1500, zoom: 12 });
     }, [currentCity]);
 
     useEffect(() => {
