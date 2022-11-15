@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Map from "react-map-gl";
+import Map, { Marker } from "react-map-gl";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
@@ -22,7 +22,6 @@ const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
-
 const Home = () => {
     const mapRef = useRef();
     const [viewState, setViewState] = useState({
@@ -52,6 +51,7 @@ const Home = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [isAddAlertButtonClicked, setIsAddAlertButtonClicked] = useState(false);
+    const [userLocation, setUserLocation] = useState({});
     const [newAlert, setNewAlert] = useState({
         location: null,
     });
@@ -86,14 +86,17 @@ const Home = () => {
     }
 
     const handleOnItemClick = (data) => {
-        console.log(data)
         setCurrentCity(data);
     }
 
     const handleOnLocationButtonClick = (e) => {
         e.preventDefault();
         navigator.geolocation.getCurrentPosition((position) => {
-            mapRef.current?.flyTo({ center: [position.coords.longitude, position.coords.latitude], duration: 1000, zoom: 14 });
+            const { longitude, latitude } = position.coords;
+            setUserLocation({
+                latitude,
+                longitude
+            });
         });
     }
 
@@ -140,8 +143,20 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        console.log(alerts)
-    }, [alerts])
+        navigator.geolocation.getCurrentPosition((position) => {
+            const { longitude, latitude } = position.coords;
+            setUserLocation({
+                latitude,
+                longitude
+            });
+        });
+    }, [])
+
+    useEffect(() => {
+        if (userLocation) {
+            mapRef.current?.flyTo({ center: [userLocation?.longitude, userLocation?.latitude], duration: 1500, zoom: 12 });
+        }
+    }, [userLocation])
 
     return <div className="homeContainer">
         <header>
@@ -161,6 +176,7 @@ const Home = () => {
             onClick={isAddAlertButtonClicked ? handleOnMapClick : null}
             ref={mapRef}
         >
+
             {
                 clusters.map(cluster => {
                     const [longitude, latitude] = cluster.geometry.coordinates;
@@ -186,20 +202,33 @@ const Home = () => {
                     )
                 })
             }
+
             {
                 showPopup && (
                     <PopupModal data={currentAlert} onClosePopup={onClosePopup} />
                 )
             }
+
+            {userLocation.latitude && <Marker longitude={userLocation.longitude} latitude={userLocation.latitude}>
+                <div style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 50,
+                    backgroundColor: "blue"
+                }}>
+
+                </div>
+            </Marker>}
+
         </Map>
         {user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
         {user ? (newAlert.location && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={newAlert.location} />) : null}
-        {isAddAlertButtonClicked && <InfoModal info="Klinkij w miejsce zgłoszenia" />}
+        {isAddAlertButtonClicked && <InfoModal info="Klinkij w miejsce zgłoszenia lub dodaj" />}
 
 
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
         <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
     </div>
 }
-
+//pobiera twoja lokalizacje -> wyswietla ją na mapie -> po kliknięciu na przycisk "dodaj zgłoszenie" nasepuje wpisanie danych -> po zatwierdzeniu zgłoszenie jest dodawane w miejscu twojej lokalizacji
 export default Home;
