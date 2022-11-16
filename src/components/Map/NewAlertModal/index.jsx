@@ -17,13 +17,17 @@ const NewAlertModal = ({ location, userId, handleCloseAfterCreate }) => {
 
     const handleCreateNewAlert = async (e) => {
         e.preventDefault();
-        const res = await axios.post("/alert/add", {
-            title: state.title,
-            description: state.description,
-            location: location,
-            userId: userId
-        })
-        handleCloseAfterCreate(e)
+        try {
+            const res = await axios.post("/alert/add", {
+                title: state.title,
+                description: state.description,
+                location: location,
+                userId: userId
+            })
+            handleCloseAfterCreate(e)
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (

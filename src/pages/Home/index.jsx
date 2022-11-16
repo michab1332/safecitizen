@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Map, { Marker } from "react-map-gl";
+import Map from "react-map-gl";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
@@ -14,6 +14,8 @@ import NewAlertModal from "../../components/Map/NewAlertModal";
 import InfoModal from "../../components/InfoModal";
 
 import Burger from "../../assets/burger.svg";
+import MarkerIcon from "../../assets/markerIcon.svg";
+import MarkerLocationIcon from "../../assets/yourLocation.svg";
 
 import "./home.css";
 import { useSelector } from "react-redux";
@@ -52,9 +54,7 @@ const Home = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isAddAlertButtonClicked, setIsAddAlertButtonClicked] = useState(false);
     const [userLocation, setUserLocation] = useState({});
-    const [newAlert, setNewAlert] = useState({
-        location: null,
-    });
+
     const { user } = useSelector(state => state.user);
 
     const bounds = mapRef.current ? mapRef.current.getMap().getBounds().toArray().flat() : null;
@@ -71,15 +71,6 @@ const Home = () => {
         setIsAddAlertButtonClicked(prevState => !prevState);
     }
 
-    const handleOnMapClick = (e) => {
-        setNewAlert(prevState => ({
-            location: {
-                latitude: e.lngLat.lat,
-                longitude: e.lngLat.lng
-            }
-        }));
-    }
-
     const handleChangeVisibleOnClick = (e) => {
         e.preventDefault();
         setIsVisible(prevState => !prevState);
@@ -89,8 +80,7 @@ const Home = () => {
         setCurrentCity(data);
     }
 
-    const handleOnLocationButtonClick = (e) => {
-        e.preventDefault();
+    const setUserLocationFromGeolocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             const { longitude, latitude } = position.coords;
             setUserLocation({
@@ -98,6 +88,11 @@ const Home = () => {
                 longitude
             });
         });
+    }
+
+    const handleOnLocationButtonClick = (e) => {
+        e.preventDefault();
+        setUserLocationFromGeolocation();
     }
 
     const getAlerts = () => {
@@ -121,14 +116,6 @@ const Home = () => {
     }
 
     useEffect(() => {
-        if (!isAddAlertButtonClicked) {
-            setNewAlert({
-                location: null,
-            });
-        }
-    }, [isAddAlertButtonClicked]);
-
-    useEffect(() => {
         if (Object.keys(currentAlert).length !== 0) {
             setShowPopup(true);
         }
@@ -143,13 +130,7 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const { longitude, latitude } = position.coords;
-            setUserLocation({
-                latitude,
-                longitude
-            });
-        });
+        setUserLocationFromGeolocation();
     }, [])
 
     useEffect(() => {
@@ -173,7 +154,6 @@ const Home = () => {
             mapStyle="mapbox://styles/mapbox/streets-v9"
             onMove={evt => setViewState(evt.viewState)}
             mapboxAccessToken={ACCESS_TOKEN}
-            onClick={isAddAlertButtonClicked ? handleOnMapClick : null}
             ref={mapRef}
         >
 
@@ -198,7 +178,7 @@ const Home = () => {
                     }
 
                     return (
-                        <MarkerItem key={cluster.properties.alertId} onClick={() => handleSetCurrentAlertOnMarkerClick(cluster.properties.data)} title={cluster.properties.data.title} lon={cluster.properties.data.location.longitude} lat={cluster.properties.data.location.latitude} />
+                        <MarkerItem key={cluster.properties.alertId} onClick={() => handleSetCurrentAlertOnMarkerClick(cluster.properties.data)} title={cluster.properties.data.title} lon={cluster.properties.data.location.longitude} lat={cluster.properties.data.location.latitude} icon={MarkerIcon} />
                     )
                 })
             }
@@ -209,26 +189,16 @@ const Home = () => {
                 )
             }
 
-            {userLocation.latitude && <Marker longitude={userLocation.longitude} latitude={userLocation.latitude}>
-                <div style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 50,
-                    backgroundColor: "blue"
-                }}>
-
-                </div>
-            </Marker>}
+            {userLocation.latitude && <MarkerItem lon={userLocation.longitude} lat={userLocation.latitude} title="Twoja lokalizacja" icon={MarkerLocationIcon} />}
 
         </Map>
         {user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
-        {user ? (newAlert.location && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={newAlert.location} />) : null}
-        {isAddAlertButtonClicked && <InfoModal info="Klinkij w miejsce zgłoszenia lub dodaj" />}
+        {user && isAddAlertButtonClicked ? (userLocation.latitude && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={userLocation} />) : null}
+        {isAddAlertButtonClicked && <InfoModal info="Zgłoszenie zostanie dodane w miejscu twojej lokalizacji" />}
 
 
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
         <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
     </div>
 }
-//pobiera twoja lokalizacje -> wyswietla ją na mapie -> po kliknięciu na przycisk "dodaj zgłoszenie" nasepuje wpisanie danych -> po zatwierdzeniu zgłoszenie jest dodawane w miejscu twojej lokalizacji
 export default Home;
