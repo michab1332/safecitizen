@@ -2,6 +2,7 @@
     position: absolute;
     height: 30px;
     width: 80%;
+    max-width: 500px;
     background-color: aliceblue;
     color: #000;
     top: 10%;

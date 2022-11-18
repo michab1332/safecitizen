@@ -3,17 +3,16 @@ import Map from "react-map-gl";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
+import { useNavigate } from "react-router-dom";
 
-
+import Header from "../../components/Header";
 import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
 import MarkerCluster from "../../components/Map/Marker/MarkerCluster";
 import PopupModal from "../../components/Map/Popup";
-import Menu from "./Menu";
 import NewAlertModal from "../../components/Map/NewAlertModal";
 import InfoModal from "../../components/InfoModal";
 
-import Burger from "../../assets/burger.svg";
 import MarkerIcon from "../../assets/markerIcon.svg";
 import MarkerLocationIcon from "../../assets/yourLocation.svg";
 
@@ -51,9 +50,10 @@ const Home = () => {
     const [currentCity, setCurrentCity] = useState({});
     const [currentAlert, setCurrentAlert] = useState({});
     const [showPopup, setShowPopup] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
     const [isAddAlertButtonClicked, setIsAddAlertButtonClicked] = useState(false);
     const [userLocation, setUserLocation] = useState({});
+
+    const navigate = useNavigate();
 
     const { user } = useSelector(state => state.user);
 
@@ -68,12 +68,11 @@ const Home = () => {
 
     const handleAddAlertOnClick = (e) => {
         e.preventDefault();
+        if (userLocation) {
+            mapRef.current?.flyTo({ center: [userLocation?.longitude, userLocation?.latitude], duration: 1500, zoom: 12 });
+        }
+        navigate("/addAlert");
         setIsAddAlertButtonClicked(prevState => !prevState);
-    }
-
-    const handleChangeVisibleOnClick = (e) => {
-        e.preventDefault();
-        setIsVisible(prevState => !prevState);
     }
 
     const handleOnItemClick = (data) => {
@@ -140,14 +139,7 @@ const Home = () => {
     }, [userLocation])
 
     return <div className="homeContainer">
-        <header>
-            <div className="header-logo">
-                <p className="header-text">Safecitizen</p>
-            </div>
-            <div onClick={e => handleChangeVisibleOnClick(e)} className="header-burger">
-                <img src={Burger} alt="burger" />
-            </div>
-        </header>
+        <Header />
         <Map
             {...viewState}
             style={{ width: "100%", height: "100%" }}
@@ -196,9 +188,7 @@ const Home = () => {
         {user && isAddAlertButtonClicked ? (userLocation.latitude && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={userLocation} />) : null}
         {isAddAlertButtonClicked && <InfoModal info="Zgłoszenie zostanie dodane w miejscu twojej lokalizacji" />}
 
-
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
-        <Menu isVisible={isVisible} handleChangeVisibleOnClick={handleChangeVisibleOnClick} />
     </div>
 }
 export default Home;
