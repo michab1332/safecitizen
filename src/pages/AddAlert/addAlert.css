@@ -1,0 +1,75 @@
+.addAlertContainer {
+    background-color: var(--light-background-color);
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.addAlertContainer__map {
+    margin-top: 6rem;
+    width: 90%;
+    max-width: 500px;
+    height: 240px;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid #000;
+}
+
+.addAlertContainer__text {
+    width: 90%;
+    max-width: 500px;
+    margin-top: .5rem;
+}
+
+.addAlertContainer__place {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.addAlertContainer__date {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.5);
+    margin-top: .2rem;
+}
+
+.addAlertContainer__form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 500px;
+    margin-top: 1.5rem;
+    row-gap: .8rem;
+    align-items: center;
+}
+
+.addAlertContainer__input {
+    outline: none;
+    width: 100%;
+    background-color: #F4F1DE;
+    padding: .4rem;
+    border-radius: 2rem;
+    border: 1px solid #000;
+}
+
+.addAlertContainer__textArea {
+    width: 100%;
+    outline: none;
+    background-color: #F4F1DE;
+    padding: .4rem;
+    border-radius: 1rem;
+    border: 1px solid #000;
+    resize: none;
+}
+
+.addAlertContainer__button {
+    cursor: pointer;
+    padding: .6rem;
+    width: 50%;
+    border-radius: 2rem;
+    border: 1px solid #000;
+    background-color: #E05F5F;
+    color: #fff;
+    font-weight: bold;
+}

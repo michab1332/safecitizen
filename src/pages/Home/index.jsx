@@ -4,20 +4,20 @@ import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserLocationStart, getUserLocationSuccess, getUserLocationFailure } from "../../redux/userSlice";
 
 import Header from "../../components/Header";
 import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
 import MarkerCluster from "../../components/Map/Marker/MarkerCluster";
 import PopupModal from "../../components/Map/Popup";
-import NewAlertModal from "../../components/Map/NewAlertModal";
 import InfoModal from "../../components/InfoModal";
 
 import MarkerIcon from "../../assets/markerIcon.svg";
-import MarkerLocationIcon from "../../assets/yourLocation.svg";
+import MarkerLocationIcon from "../../assets/locationOnHomeMap.svg";
 
 import "./home.css";
-import { useSelector } from "react-redux";
 
 const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 // @ts-ignore
@@ -50,12 +50,12 @@ const Home = () => {
     const [currentCity, setCurrentCity] = useState({});
     const [currentAlert, setCurrentAlert] = useState({});
     const [showPopup, setShowPopup] = useState(false);
-    const [isAddAlertButtonClicked, setIsAddAlertButtonClicked] = useState(false);
-    const [userLocation, setUserLocation] = useState({});
 
     const navigate = useNavigate();
 
-    const { user } = useSelector(state => state.user);
+    const { user } = useSelector(state => state);
+
+    const dispatch = useDispatch();
 
     const bounds = mapRef.current ? mapRef.current.getMap().getBounds().toArray().flat() : null;
 
@@ -68,11 +68,10 @@ const Home = () => {
 
     const handleAddAlertOnClick = (e) => {
         e.preventDefault();
-        if (userLocation) {
-            mapRef.current?.flyTo({ center: [userLocation?.longitude, userLocation?.latitude], duration: 1500, zoom: 12 });
+        if (user.location) {
+            mapRef.current?.flyTo({ center: [user.location?.longitude, user.location?.latitude], duration: 1500, zoom: 12 });
         }
         navigate("/addAlert");
-        setIsAddAlertButtonClicked(prevState => !prevState);
     }
 
     const handleOnItemClick = (data) => {
@@ -80,13 +79,15 @@ const Home = () => {
     }
 
     const setUserLocationFromGeolocation = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const { longitude, latitude } = position.coords;
-            setUserLocation({
-                latitude,
-                longitude
+        dispatch(getUserLocationStart());
+        try {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { longitude, latitude } = position.coords;
+                dispatch(getUserLocationSuccess({ longitude: longitude, latitude: latitude }));
             });
-        });
+        } catch (err) {
+            dispatch(getUserLocationFailure(err));
+        }
     }
 
     const handleOnLocationButtonClick = (e) => {
@@ -133,10 +134,10 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        if (userLocation) {
-            mapRef.current?.flyTo({ center: [userLocation?.longitude, userLocation?.latitude], duration: 1500, zoom: 12 });
+        if (user?.location) {
+            mapRef.current?.flyTo({ center: [user.location.longitude, user.location.latitude], duration: 1500, zoom: 12 });
         }
-    }, [userLocation])
+    }, [user.location])
 
     return <div className="homeContainer">
         <Header />
@@ -181,12 +182,11 @@ const Home = () => {
                 )
             }
 
-            {userLocation.latitude && <MarkerItem lon={userLocation.longitude} lat={userLocation.latitude} title="Twoja lokalizacja" icon={MarkerLocationIcon} />}
+            {user.location?.latitude && <MarkerItem lon={user.location.longitude} lat={user.location.latitude} title="Twoja lokalizacja" icon={MarkerLocationIcon} />}
 
         </Map>
-        {user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">{isAddAlertButtonClicked ? "Cofnij" : "Dodaj zgłoszenie"}</button>)}
-        {user && isAddAlertButtonClicked ? (userLocation.latitude && <NewAlertModal handleCloseAfterCreate={handleAddAlertOnClick} userId={user._id} location={userLocation} />) : null}
-        {isAddAlertButtonClicked && <InfoModal info="Zgłoszenie zostanie dodane w miejscu twojej lokalizacji" />}
+
+        {user.user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">Dodaj zgłoszenie</button>)}
 
         <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
     </div>
