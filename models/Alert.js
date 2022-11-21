@@ -19,7 +19,7 @@ const AlertSchema = new mongoose.Schema({
             type: Number,
             required: true
         },
-        adress: {
+        place: {
             type: String,
         }
     },

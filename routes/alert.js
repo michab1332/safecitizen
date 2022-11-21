@@ -10,7 +10,7 @@ router.get("/search", getAlertsByAdress);
 
 router.get("/:id", getAlert);
 
-router.post("/add", addAlert);
+router.post("/add", verifyToken, addAlert);
 
 router.delete("/:id", verifyToken, deleteAlert);
 
