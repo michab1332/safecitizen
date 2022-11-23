@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import AddAlert from "./pages/AddAlert";
+import Alert from "./pages/Alert";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,9 @@ const router = createBrowserRouter([
   {
     path: "/addAlert",
     element: <AddAlert />
+  }, {
+    path: "/alert",
+    element: <Alert />
   }
 ]);
 

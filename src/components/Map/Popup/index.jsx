@@ -10,7 +10,7 @@ const PopupModal = ({ data, onClosePopup }) => {
         onClose={onClosePopup}>
         <div className="popupContainer">
             <div className="popupContainer__adress">
-                <p className="popupContainer__adressName">{location.adress}</p>
+                <p className="popupContainer__adressName">{location.place}</p>
                 <p className="popupContainer__createdAt">{format(createdAt)}</p>
             </div>
             <p className="popupContainer__title">{title}</p>

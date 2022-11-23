@@ -4,15 +4,13 @@ import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import useSupercluster from "use-supercluster";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { getUserLocationStart, getUserLocationSuccess, getUserLocationFailure } from "../../redux/userSlice";
+import { useSelector } from "react-redux";
+import useGeoLocation from "../../hooks/useGeoLocation";
 
 import Header from "../../components/Header";
 import SearchModel from "../../components/Map/SearchModel";
 import MarkerItem from "../../components/Map/Marker";
 import MarkerCluster from "../../components/Map/Marker/MarkerCluster";
-import PopupModal from "../../components/Map/Popup";
-import InfoModal from "../../components/InfoModal";
 
 import MarkerIcon from "../../assets/markerIcon.svg";
 import MarkerLocationIcon from "../../assets/locationOnHomeMap.svg";
@@ -25,6 +23,7 @@ const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 const Home = () => {
     const mapRef = useRef();
+    const location = useGeoLocation();
     const [viewState, setViewState] = useState({
         latitude: 53.012918,
         longitude: 18.593554,
@@ -48,14 +47,10 @@ const Home = () => {
         }
     }));
     const [currentCity, setCurrentCity] = useState({});
-    const [currentAlert, setCurrentAlert] = useState({});
-    const [showPopup, setShowPopup] = useState(false);
 
     const navigate = useNavigate();
 
     const { user } = useSelector(state => state);
-
-    const dispatch = useDispatch();
 
     const bounds = mapRef.current ? mapRef.current.getMap().getBounds().toArray().flat() : null;
 
@@ -68,8 +63,8 @@ const Home = () => {
 
     const handleAddAlertOnClick = (e) => {
         e.preventDefault();
-        if (user.location) {
-            mapRef.current?.flyTo({ center: [user.location?.longitude, user.location?.latitude], duration: 1500, zoom: 12 });
+        if (location.loaded) {
+            mapRef.current?.flyTo({ center: [location.coordinates.lng, location.coordinates.lat], duration: 1500, zoom: 12 });
         }
         navigate("/addAlert");
     }
@@ -78,21 +73,9 @@ const Home = () => {
         setCurrentCity(data);
     }
 
-    const setUserLocationFromGeolocation = () => {
-        dispatch(getUserLocationStart());
-        try {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { longitude, latitude } = position.coords;
-                dispatch(getUserLocationSuccess({ longitude: longitude, latitude: latitude }));
-            });
-        } catch (err) {
-            dispatch(getUserLocationFailure(err));
-        }
-    }
-
     const handleOnLocationButtonClick = (e) => {
         e.preventDefault();
-        setUserLocationFromGeolocation();
+        //setUserLocationFromGeolocation();
     }
 
     const getAlerts = () => {
@@ -107,19 +90,8 @@ const Home = () => {
     }
 
     const handleSetCurrentAlertOnMarkerClick = (alert) => {
-        setCurrentAlert(alert);
+        navigate("/alert", { state: alert });
     }
-
-    const onClosePopup = () => {
-        setCurrentAlert({});
-        setShowPopup(false);
-    }
-
-    useEffect(() => {
-        if (Object.keys(currentAlert).length !== 0) {
-            setShowPopup(true);
-        }
-    }, [currentAlert])
 
     useEffect(() => {
         mapRef.current?.flyTo({ center: [currentCity?.center[0], currentCity?.center[1]], duration: 1500, zoom: 12 });
@@ -130,14 +102,10 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        setUserLocationFromGeolocation();
-    }, [])
-
-    useEffect(() => {
-        if (user?.location) {
-            mapRef.current?.flyTo({ center: [user.location.longitude, user.location.latitude], duration: 1500, zoom: 12 });
+        if (location.loaded) {
+            mapRef.current?.flyTo({ center: [location.coordinates.lng, location.coordinates.lat], duration: 1500, zoom: 12 });
         }
-    }, [user.location])
+    }, [location.loaded])
 
     return <div className="homeContainer">
         <Header />
@@ -176,13 +144,7 @@ const Home = () => {
                 })
             }
 
-            {
-                showPopup && (
-                    <PopupModal data={currentAlert} onClosePopup={onClosePopup} />
-                )
-            }
-
-            {user.location?.latitude && <MarkerItem lon={user.location.longitude} lat={user.location.latitude} title="Twoja lokalizacja" icon={MarkerLocationIcon} />}
+            {location.loaded && <MarkerItem lon={location.coordinates.lng} lat={location.coordinates.lat} title="" icon={MarkerLocationIcon} />}
 
         </Map>
 

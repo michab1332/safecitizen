@@ -3,8 +3,9 @@ import Map from "react-map-gl";
 import mapboxgl from "mapbox-gl";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLocationStart, getUserLocationSuccess, getUserLocationFailure } from "../../redux/userSlice";
 import axios from "axios";
+import useGeoLocation from "../../hooks/useGeoLocation";
+import { DateUtils } from "../../utils";
 
 import Header from "../../components/Header";
 import MarkerItem from "../../components/Map/Marker";
@@ -26,16 +27,16 @@ export default function AddAlert() {
         place: null,
         time: null
     });
+    const location = useGeoLocation();
 
     const { user } = useSelector(state => state);
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [viewState, setViewState] = useState({
-        latitude: user.location.latitude,
-        longitude: user.location.longitude,
-        zoom: 14,
+        latitude: 53.012918,
+        longitude: 18.593554,
+        zoom: 12,
     })
 
     const mapRef = useRef();
@@ -48,7 +49,7 @@ export default function AddAlert() {
     }
 
     const getPlaceFromUserLocation = async () => {
-        const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${user.location.longitude},${user.location.latitude}.json?access_token=${process.env.REACT_APP_ACCESS_TOKEN}`;
+        const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.coordinates.lng},${location.coordinates.lat}.json?access_token=${process.env.REACT_APP_ACCESS_TOKEN}`;
         try {
             const response = await axios.get(endpoint);
             setState(prevState => ({
@@ -61,29 +62,23 @@ export default function AddAlert() {
     }
 
     const setTime = () => {
-        const date = new Date();
-        const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'long' });
-        const year = date.getFullYear();
-        const minutes = date.getMinutes();
-        const hours = date.getHours();
         setState(prevState => ({
             ...prevState,
-            time: `${day} ${month} ${year}, ${hours}:${minutes}`
+            time: DateUtils()
         }));
     }
 
     const handleCreateNewAlert = async (e) => {
         e.preventDefault();
-        if (state.title && state.description) {
+        if (state.title && state.description && location.loaded === true) {
             try {
                 const response = await axios.post("/alert/add", {
                     title: state.title,
                     description: state.description,
                     location: {
                         place: state.place,
-                        longitude: user.location.longitude,
-                        latitude: user.location.latitude
+                        longitude: location.coordinates.lng,
+                        latitude: location.coordinates.lat
                     },
                     userId: user.user._id
                 })
@@ -97,21 +92,12 @@ export default function AddAlert() {
     }
 
     useEffect(() => {
-        getPlaceFromUserLocation();
+        if (location.loaded) {
+            getPlaceFromUserLocation();
+            mapRef.current?.flyTo({ center: [location.coordinates.lng, location.coordinates.lat], duration: 1500, zoom: 12 });
+        }
         setTime();
-    }, [])
-
-    // const setUserLocationFromGeolocation = () => {
-    //     dispatch(getUserLocationStart());
-    //     try {
-    //         navigator.geolocation.getCurrentPosition((position) => {
-    //             const { longitude, latitude } = position.coords;
-    //             dispatch(getUserLocationSuccess({ longitude: longitude, latitude: latitude }));
-    //         });
-    //     } catch (err) {
-    //         dispatch(getUserLocationFailure(err));
-    //     }
-    // }
+    }, [location.loaded])
 
     return (
         <div className="addAlertContainer">
@@ -124,7 +110,7 @@ export default function AddAlert() {
                     mapboxAccessToken={ACCESS_TOKEN}
                     onMove={evt => setViewState(evt.viewState)}
                     ref={mapRef}>
-                    {user.location ? <MarkerItem icon={MarkerIcon} lat={user.location.latitude} lon={user.location.longitude} /> : null}
+                    {location.loaded ? <MarkerItem icon={MarkerIcon} lat={location.coordinates.lat} lon={location.coordinates.lng} /> : null}
                 </Map>
             </div>
             <div className="addAlertContainer__text">
