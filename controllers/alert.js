@@ -6,7 +6,7 @@ export const addAlert = async (req, res, next) => {
     const newAlert = new Alert({ ...req.body, userId: req.user.id });
     try {
         const checkIsAlertInTheSameLocation = await Alert.find({ 'location.longitude': req.body.location.longitude, 'location.latitude': req.body.location.latitude });
-        if (checkIsAlertInTheSameLocation) return next(createError(400, "You cant add alert in the location of another alert"));
+        if (checkIsAlertInTheSameLocation.length > 0) return next(createError(400, "You cant add alert in the location of another alert"));
 
         await newAlert.save();
         await User.findByIdAndUpdate(req.user.id, {
