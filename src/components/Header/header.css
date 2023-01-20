@@ -5,6 +5,7 @@ header {
     background-color: #302B27;
     align-items: center;
     padding: 1rem;
+    justify-content: space-between;
 }
 
 .header-logo {
@@ -32,4 +33,21 @@ header {
 
 .header-burger img {
     width: 50%;
+}
+
+.header__link {
+    display: block;
+    color: #fff;
+    font-weight: bold;
+    user-select: none;
+    cursor: pointer;
+    transition: color .5s ease;
+}
+
+.header__link:hover {
+    color: #71F79F;
+}
+
+.header__link-hidden {
+    display: none;
 }

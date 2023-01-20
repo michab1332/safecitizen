@@ -3,7 +3,7 @@
     height: 100vh;
 }
 
-.homeContainer__addAlertButton {
+/* .homeContainer__addAlertButton {
     position: absolute;
     top: 85%;
     z-index: 1;
@@ -15,7 +15,7 @@
     border-radius: 50px;
     border: none;
     cursor: pointer;
-}
+} */
 
 .mapboxgl-map {
     height: calc(100% - 4.7rem) !important;
@@ -23,8 +23,7 @@
 
 .homeContainer__wrapper {
     width: 100vw;
-    height: 95vh;
-
+    height: 95%;
 }
 
 @media only screen and (min-width: 600px) {
