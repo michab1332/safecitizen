@@ -23,10 +23,10 @@ export default function AddAlert() {
     const { user } = useSelector(state => state);
 
     const { state } = useLocation();
-
+    //przerob to w taki sposob zeby w linku bylo id alertu i z id pobieralo by informacje o nim - axios
     const [viewState, setViewState] = useState({
-        latitude: user.location.latitude,
-        longitude: user.location.longitude,
+        latitude: state.location.latitude,
+        longitude: state.location.longitude,
         zoom: 14,
     })
 
@@ -51,7 +51,7 @@ export default function AddAlert() {
                 <Map
                     {...viewState}
                     style={{ width: "100%", height: "100%" }}
-                    mapStyle="mapbox://styles/mapbox/streets-v9"
+                    mapStyle="mapbox://styles/mapbox/dark-v11"
                     mapboxAccessToken={ACCESS_TOKEN}
                     onMove={evt => setViewState(evt.viewState)}
                     ref={mapRef}>
@@ -62,7 +62,10 @@ export default function AddAlert() {
                 <p className="addAlertContainer__place">{state.location.place}</p>
                 <p className="addAlertContainer__date">{DateUtils(state.createdAt)}</p>
             </div>
-
+            <div className="alertContainer__content">
+                <p className="alertContainer__title">{state.title}</p>
+                <p className="alertContainer__desc">{state.description}</p>
+            </div>
         </div>
     )
 }

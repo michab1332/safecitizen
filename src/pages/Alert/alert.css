@@ -1,0 +1,9 @@
+.alertContainer__content {
+    width: 90%;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+.alertContainer__title {
+    font-weight: bold;
+}

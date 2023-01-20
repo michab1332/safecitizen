@@ -23,6 +23,7 @@ const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 const Home = () => {
     const mapRef = useRef();
+
     const location = useGeoLocation();
     const [viewState, setViewState] = useState({
         latitude: 53.012918,
@@ -75,7 +76,7 @@ const Home = () => {
 
     const handleOnLocationButtonClick = (e) => {
         e.preventDefault();
-        //setUserLocationFromGeolocation();
+        //fly to
     }
 
     const getAlerts = () => {
@@ -109,48 +110,50 @@ const Home = () => {
 
     return <div className="homeContainer">
         <Header />
-        <Map
-            {...viewState}
-            style={{ width: "100%", height: "100%" }}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
-            onMove={evt => setViewState(evt.viewState)}
-            mapboxAccessToken={ACCESS_TOKEN}
-            ref={mapRef}
-        >
+        <div className="homeContainer__wrapper">
+            <Map
+                {...viewState}
+                style={{ width: "100%"}}
+                mapStyle="mapbox://styles/mapbox/dark-v11"
+                onMove={evt => setViewState(evt.viewState)}
+                mapboxAccessToken={ACCESS_TOKEN}
+                ref={mapRef}
+            >
 
-            {
-                clusters.map(cluster => {
-                    const [longitude, latitude] = cluster.geometry.coordinates;
-                    const {
-                        cluster: isCluster,
-                        point_count: pointCount
-                    } = cluster.properties;
+                {
+                    clusters.map(cluster => {
+                        const [longitude, latitude] = cluster.geometry.coordinates;
+                        const {
+                            cluster: isCluster,
+                            point_count: pointCount
+                        } = cluster.properties;
 
-                    if (isCluster) {
-                        const size = `${20 + (pointCount / points.length) * 20}px`;
-                        const onMarkerClusterClick = () => {
-                            const expansionZoom = Math.min(supercluster.getClusterExpansionZoom(cluster.id), 20);
-                            mapRef.current?.flyTo({ center: [longitude, latitude], duration: 1500, zoom: expansionZoom });
+                        if (isCluster) {
+                            const size = `${20 + (pointCount / points.length) * 20}px`;
+                            const onMarkerClusterClick = () => {
+                                const expansionZoom = Math.min(supercluster.getClusterExpansionZoom(cluster.id), 20);
+                                mapRef.current?.flyTo({ center: [longitude, latitude], duration: 1500, zoom: expansionZoom });
+                            }
+
+                            return (
+                                <MarkerCluster key={cluster.id} onMarkerClusterClick={onMarkerClusterClick} size={size} lat={latitude} lon={longitude} count={pointCount} />
+                            );
                         }
 
                         return (
-                            <MarkerCluster key={cluster.id} onMarkerClusterClick={onMarkerClusterClick} size={size} lat={latitude} lon={longitude} count={pointCount} />
-                        );
-                    }
+                            <MarkerItem key={cluster.properties.alertId} onClick={() => handleSetCurrentAlertOnMarkerClick(cluster.properties.data)} title={cluster.properties.data.title} lon={cluster.properties.data.location.longitude} lat={cluster.properties.data.location.latitude} icon={MarkerIcon} />
+                        )
+                    })
+                }
 
-                    return (
-                        <MarkerItem key={cluster.properties.alertId} onClick={() => handleSetCurrentAlertOnMarkerClick(cluster.properties.data)} title={cluster.properties.data.title} lon={cluster.properties.data.location.longitude} lat={cluster.properties.data.location.latitude} icon={MarkerIcon} />
-                    )
-                })
-            }
+                {location.loaded && <MarkerItem lon={location.coordinates.lng} lat={location.coordinates.lat} title="" icon={MarkerLocationIcon} />}
 
-            {location.loaded && <MarkerItem lon={location.coordinates.lng} lat={location.coordinates.lat} title="" icon={MarkerLocationIcon} />}
+            </Map>
 
-        </Map>
+            {/* {user.user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">Dodaj zgłoszenie</button>)} */}
 
-        {user.user && (<button onClick={handleAddAlertOnClick} className="homeContainer__addAlertButton">Dodaj zgłoszenie</button>)}
-
-        <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
+            <SearchModel handleOnItemClick={handleOnItemClick} handleOnLocationButtonClick={handleOnLocationButtonClick} />
+        </div>
     </div>
 }
 export default Home;

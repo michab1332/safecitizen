@@ -4,6 +4,10 @@
     align-items: center;
 }
 
+.markerItem__text {
+    color: #fff;
+}
+
 .markerCluster {
     background-color: #E05F5F;
     color: #fff;

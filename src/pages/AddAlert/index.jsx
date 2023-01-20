@@ -106,7 +106,7 @@ export default function AddAlert() {
                 <Map
                     {...viewState}
                     style={{ width: "100%", height: "100%" }}
-                    mapStyle="mapbox://styles/mapbox/streets-v9"
+                    mapStyle="mapbox://styles/mapbox/dark-v11"
                     mapboxAccessToken={ACCESS_TOKEN}
                     onMove={evt => setViewState(evt.viewState)}
                     ref={mapRef}>

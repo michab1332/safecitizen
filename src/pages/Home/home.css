@@ -16,3 +16,26 @@
     border: none;
     cursor: pointer;
 }
+
+.mapboxgl-map {
+    height: calc(100% - 4.7rem) !important;
+}
+
+.homeContainer__wrapper {
+    width: 100vw;
+    height: 95vh;
+
+}
+
+@media only screen and (min-width: 600px) {
+    .homeContainer__wrapper {
+        display: flex;
+        height: 95vh;
+        width: 100vw;
+        flex-direction: row-reverse;
+    }
+
+    .mapboxgl-map {
+        height: 95vh !important;
+    }
+}

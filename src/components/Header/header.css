@@ -1,23 +1,16 @@
 header {
     width: 100vw;
-    height: 10vh;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+    height: 5vh;
     display: flex;
+    background-color: #302B27;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
+    padding: 1rem;
 }
 
 .header-logo {
-    color: var(--text-color);
-    background-color: var(--main-background-color);
-    padding: .5rem 1rem;
-    border-radius: 50px;
-    filter: drop-shadow(0px 0px 20px rgba(242, 204, 143, 0.5));
-    user-select: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
 }
 
 .header-text {

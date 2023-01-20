@@ -4,6 +4,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { store, persistor } from "./redux/store";
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { BrowserRouter as Router } from "react-router-dom";
 
 import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -13,7 +14,9 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <Router>
+          <App />
+        </Router>
       </PersistGate>
     </Provider>
   </React.StrictMode>
