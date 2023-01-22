@@ -62,6 +62,7 @@
     .searchContainer {
         width: 50%;
         height: 95vh;
+        position: relative;
     }
 
     .searchContainer-mobile-active {

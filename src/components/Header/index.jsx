@@ -17,6 +17,10 @@ const Header = () => {
         setIsVisible(prevState => !prevState);
     }
 
+    const handleLogout = () => {
+        dispatch(logout());
+    }
+
     return (
         <header>
             <div className="header-logo">
@@ -24,7 +28,7 @@ const Header = () => {
                 <img src={Logo} alt="logo" className="header-logoIcon" />
             </div>
             <Link className={user ? "header__link-hidden" : "header__link"} to="/signin">Zaloguj się</Link>
-            <p className={user ? "header__link" : "header__link-hidden"}>Wyloguj się</p>
+            <p onClick={handleLogout} className={user ? "header__link" : "header__link-hidden"}>Wyloguj się</p>
             {/* <div onClick={e => handleChangeVisibleOnClick(e)} className="header-burger">
                     <img src={Burger} alt="burger" />
                 </div> */}
