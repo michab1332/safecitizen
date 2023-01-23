@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import LocationIcon from "../../../assets/locationIcon.svg";
 
@@ -20,10 +21,24 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     })
     const [activeSearchMobileState, setActiveSearchMobileState] = useState({
         searchingCity: false,
-        choosingAction: false
+        choosingAction: false,
+        isAlert: false
     });
     const [isSearchMenuActive, setIsSearchMenuActive] = useState(false);
     const [isButtonClicked, setIsButtonClicked] = useState(false);
+
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const { pathname } = useLocation();
+
+    const options = [
+        {
+            name: "Dodaj zgłoszenie",
+            action: () => {
+                navigate("/addAlert")
+            }
+        }
+    ]
 
     function handleOnChangeSearchInput(e) {
         const { value } = e.target;
@@ -32,14 +47,16 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             setIsSearchMenuActive(false)
             setActiveSearchMobileState(prevState => ({
                 choosingAction: false,
-                searchingCity: false
+                searchingCity: false,
+                isAlert: false
             }));
             return;
         }
         setIsSearchMenuActive(true);
-        setActiveSearchMobileState(...prevState => ({
+        setActiveSearchMobileState(prevState => ({
             choosingAction: false,
-            searchingCity: true
+            searchingCity: true,
+            isAlert: false
         }));
     }
 
@@ -48,7 +65,8 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         setIsSearchMenuActive(prevState => !prevState);
         setActiveSearchMobileState(prevState => ({
             choosingAction: true,
-            searchingCity: false
+            searchingCity: false,
+            isAlert: false
         }));
     }
 
@@ -70,6 +88,23 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         }
     }, [city])
 
+    useEffect(() => {
+        if (getPathName() === "alert") {
+            setActiveSearchMobileState(prevState => ({
+                choosingAction: false,
+                searchingCity: false,
+                isAlert: true
+            }));
+            setIsSearchMenuActive(true);
+        }
+        console.log(getPathName())
+    }, [pathname])
+
+    const getPathName = () => {
+        const path = pathname.split("/")[1];
+        return path;
+    }
+
     const responseArrayMapped = response.data.map(item => {
         return <Item key={item.id} data={item} onClick={function () {
             handleOnItemClick(item);
@@ -77,28 +112,23 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         }} />
     })
 
+    const optionsArrayMapped = options.map(item => (
+        <li className="searchContainer-result" key={item.name} onClick={item.action}>{item.name}</li>
+    ))
+
     let searchMobile = null;
     if (activeSearchMobileState.choosingAction) {
-        searchMobile = <SearchMobile title="Wybierz akcje" data={responseArrayMapped} />
+        searchMobile = <SearchMobile title={"Wybierz akcje"} data={optionsArrayMapped} isSearchMenuActive={isSearchMenuActive} />
     } else if (activeSearchMobileState.searchingCity) {
-        searchMobile = <SearchMobile title="Wybierz miasto" data={responseArrayMapped} />
+        searchMobile = <SearchMobile title="Wybierz miasto" data={responseArrayMapped} isSearchMenuActive={isSearchMenuActive} />
+    } else if (activeSearchMobileState.isAlert) {
+        searchMobile = <SearchMobile title="" data={[]} isSearchMenuActive={isSearchMenuActive} outlet={true} />
     }
-
-    // const displaySearchMobile = () => {
-    //     if (isButtonClicked) {
-    //         return <SearchMobile title="Wybierz akcje" data={responseArrayMapped} />
-    //     }
-    //     return <SearchMobile title="Wybierz miasto" data={responseArrayMapped} />
-    // }
 
     return (
         <div className="searchContainer">
 
-            <div className={isSearchMenuActive ? "searchContainer-mobile-active" : "searchContainer-mobile"}>
-                {isSearchMenuActive ? searchMobile : null}
-
-                <Outlet />
-            </div>
+            {searchMobile}
 
             <form className="searchContainer-form">
                 <input value={city} onChange={handleOnChangeSearchInput} type="text" placeholder="search city" className="searchContainer-text" />

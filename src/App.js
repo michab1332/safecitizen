@@ -9,6 +9,7 @@ import Signup from './pages/Signup';
 import AddAlert from "./pages/AddAlert";
 import AddAlertI from "./pages/AddAlert/addAlertI";
 import Alert from "./pages/Alert";
+import AlertI from "./pages/Alert/AlertI";
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />}>
         <Route path="/addAlert" element={<AddAlertI />} />
-        <Route path="/alert" element={<Alert />} />
+        <Route path="/alert/:id" element={<AlertI />} />
       </Route>
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />

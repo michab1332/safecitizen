@@ -91,7 +91,8 @@ const Home = () => {
     }
 
     const handleSetCurrentAlertOnMarkerClick = (alert) => {
-        navigate("/alert", { state: alert });
+        const { _id } = alert;
+        navigate(`/alert/${_id}`, { state: alert });
     }
 
     useEffect(() => {
@@ -113,13 +114,12 @@ const Home = () => {
         <div className="homeContainer__wrapper">
             <Map
                 {...viewState}
-                style={{ width: "100%"}}
+                style={{ width: "100%" }}
                 mapStyle="mapbox://styles/mapbox/dark-v11"
                 onMove={evt => setViewState(evt.viewState)}
                 mapboxAccessToken={ACCESS_TOKEN}
                 ref={mapRef}
             >
-
                 {
                     clusters.map(cluster => {
                         const [longitude, latitude] = cluster.geometry.coordinates;
