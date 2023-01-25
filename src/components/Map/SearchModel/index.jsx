@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Outlet } from "react-router-dom";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import LocationIcon from "../../../assets/locationIcon.svg";
 
@@ -28,7 +27,6 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     const [isButtonClicked, setIsButtonClicked] = useState(false);
 
     const navigate = useNavigate();
-    const { id } = useParams();
     const { pathname } = useLocation();
 
     const options = [
@@ -70,6 +68,11 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         }));
     }
 
+    const getPathName = () => {
+        const path = pathname.split("/")[1];
+        return path;
+    }
+
     useEffect(() => {
         if (city !== "") {
             axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?proximity=ip&types=place%2Cpostcode%2Caddress&access_token=${process.env.REACT_APP_ACCESS_TOKEN}`)
@@ -97,13 +100,7 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             }));
             setIsSearchMenuActive(true);
         }
-        console.log(getPathName())
     }, [pathname])
-
-    const getPathName = () => {
-        const path = pathname.split("/")[1];
-        return path;
-    }
 
     const responseArrayMapped = response.data.map(item => {
         return <Item key={item.id} data={item} onClick={function () {
