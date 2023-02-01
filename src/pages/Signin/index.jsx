@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../../redux/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "./sign.css";
 
@@ -48,6 +48,7 @@ const Signin = () => {
                 <input onChange={handleOnInputChange} type="text" className="signcontainer__input" placeholder="Name" name="name" />
                 <input onChange={handleOnInputChange} type="password" className="signcontainer__input" placeholder="Password" name="password" />
                 <button className="signContainer__button">Zaloguj się</button>
+                <Link to="/signup" className="singContainer__textSmall">lub zarejestruj sie</Link>
             </form>
         </div>
     )

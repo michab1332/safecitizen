@@ -41,7 +41,7 @@ header {
     font-weight: bold;
     user-select: none;
     cursor: pointer;
-    transition: color .5s ease;
+    transition: color .3s ease;
 }
 
 .header__link:hover {

@@ -66,6 +66,7 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             searchingCity: false,
             isAlert: false
         }));
+        navigate("/");
     }
 
     const getPathName = () => {
@@ -99,6 +100,13 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
                 isAlert: true
             }));
             setIsSearchMenuActive(true);
+        } else {
+            setActiveSearchMobileState(prevState => ({
+                choosingAction: false,
+                searchingCity: false,
+                isAlert: false
+            }));
+            setIsSearchMenuActive(false);
         }
     }, [pathname])
 
@@ -119,7 +127,7 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     } else if (activeSearchMobileState.searchingCity) {
         searchMobile = <SearchMobile title="Wybierz miasto" data={responseArrayMapped} isSearchMenuActive={isSearchMenuActive} />
     } else if (activeSearchMobileState.isAlert) {
-        searchMobile = <SearchMobile title="" data={[]} isSearchMenuActive={isSearchMenuActive} outlet={true} />
+        searchMobile = <SearchMobile isSearchMenuActive={isSearchMenuActive} outlet={true} />
     }
 
     return (
@@ -128,7 +136,7 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             {searchMobile}
 
             <form className="searchContainer-form">
-                <input value={city} onChange={handleOnChangeSearchInput} type="text" placeholder="search city" className="searchContainer-text" />
+                <input value={city} onChange={handleOnChangeSearchInput} type="text" placeholder="Szukaj miasta" className="searchContainer-text" />
                 <button onClick={handleOnButtonClick} className="searchContainer-button">
                     <img src={LocationIcon} alt="search_icon" />
                 </button>

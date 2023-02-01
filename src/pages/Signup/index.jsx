@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 import "../Signin/sign.css";
@@ -41,6 +41,7 @@ const Signup = () => {
                 <input type="email" onChange={handleOnInputChange} className="signcontainer__input" placeholder="E-mail" name="email" />
                 <input type="password" onChange={handleOnInputChange} className="signcontainer__input" placeholder="Password" name="password" />
                 <button className="signContainer__button">Załóż konto</button>
+                <Link to="/signin" className="singContainer__textSmall">lub zaloguj się</Link>
             </form>
         </div>
     )
