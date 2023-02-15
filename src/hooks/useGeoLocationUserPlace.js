@@ -5,7 +5,8 @@ import useGeoLocation from "./useGeoLocation";
 export default function useGeoLocationUserPlace() {
     const [place, setPlace] = useState({
         loaded: false,
-        locationName: ""
+        locationName: "",
+        coordinates: {}
     });
 
     const location = useGeoLocation();
@@ -16,7 +17,8 @@ export default function useGeoLocationUserPlace() {
             const response = await axios.get(endpoint);
             setPlace(({
                 loaded: true,
-                locationName: `${response.data.features[0].context[1].text}, ${response.data.features[0].text}`
+                locationName: `${response.data.features[0].context[1].text}, ${response.data.features[0].text}`,
+                coordinates: location.coordinates
             }));
         } catch (err) {
             console.log(err)
