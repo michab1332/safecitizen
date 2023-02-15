@@ -12,7 +12,7 @@ const Item = ({ data, onClick }) => {
     return <li onClick={() => onClick()} className="searchContainer-result">{data.place_name}</li>
 }
 
-const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
+const SearchModel = ({ handleOnItemClick }) => {
     const [city, setCity] = useState("");
     const [response, setResponse] = useState({
         data: [],
@@ -21,10 +21,11 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     const [activeSearchMobileState, setActiveSearchMobileState] = useState({
         searchingCity: false,
         choosingAction: false,
-        isAlert: false
+        isAlert: false,
+        isAddAlert: false
     });
     const [isSearchMenuActive, setIsSearchMenuActive] = useState(false);
-    const [isButtonClicked, setIsButtonClicked] = useState(false);
+    //const [isButtonClicked, setIsButtonClicked] = useState(false);
 
     const navigate = useNavigate();
     const { pathname } = useLocation();
@@ -46,7 +47,8 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             setActiveSearchMobileState(prevState => ({
                 choosingAction: false,
                 searchingCity: false,
-                isAlert: false
+                isAlert: false,
+                isAddAlert: false
             }));
             return;
         }
@@ -54,7 +56,8 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         setActiveSearchMobileState(prevState => ({
             choosingAction: false,
             searchingCity: true,
-            isAlert: false
+            isAlert: false,
+            isAddAlert: false
         }));
     }
 
@@ -64,7 +67,8 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
         setActiveSearchMobileState(prevState => ({
             choosingAction: true,
             searchingCity: false,
-            isAlert: false
+            isAlert: false,
+            isAddAlert: false
         }));
         navigate("/");
     }
@@ -97,14 +101,24 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
             setActiveSearchMobileState(prevState => ({
                 choosingAction: false,
                 searchingCity: false,
-                isAlert: true
+                isAlert: true,
+                isAddAlert: false
+            }));
+            setIsSearchMenuActive(true);
+        } else if (getPathName() === "addAlert") {
+            setActiveSearchMobileState(prevState => ({
+                choosingAction: false,
+                searchingCity: false,
+                isAlert: false,
+                isAddAlert: true
             }));
             setIsSearchMenuActive(true);
         } else {
             setActiveSearchMobileState(prevState => ({
                 choosingAction: false,
                 searchingCity: false,
-                isAlert: false
+                isAlert: false,
+                isAddAlert: false
             }));
             setIsSearchMenuActive(false);
         }
@@ -127,6 +141,8 @@ const SearchModel = ({ handleOnItemClick, handleOnLocationButtonClick }) => {
     } else if (activeSearchMobileState.searchingCity) {
         searchMobile = <SearchMobile title="Wybierz miasto" data={responseArrayMapped} isSearchMenuActive={isSearchMenuActive} />
     } else if (activeSearchMobileState.isAlert) {
+        searchMobile = <SearchMobile isSearchMenuActive={isSearchMenuActive} outlet={true} />
+    } else if (activeSearchMobileState.isAddAlert) {
         searchMobile = <SearchMobile isSearchMenuActive={isSearchMenuActive} outlet={true} />
     }
 

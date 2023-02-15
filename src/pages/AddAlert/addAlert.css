@@ -1,75 +1,21 @@
-.addAlertContainer {
-    background-color: var(--light-background-color);
+.alertContainer {
     width: 100%;
-    min-height: 100vh;
+}
+
+.alertContainer__header {
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: .3rem;
+    border-bottom: #fff solid 1px;
 }
 
-.addAlertContainer__map {
-    margin-top: 6rem;
-    width: 90%;
-    max-width: 500px;
-    height: 240px;
-    border-radius: 1rem;
-    overflow: hidden;
-    border: 1px solid #000;
+.alertContainer__place::first-letter {
+    text-transform: capitalize;
 }
 
-.addAlertContainer__text {
-    width: 90%;
-    max-width: 500px;
-    margin-top: .5rem;
-}
-
-.addAlertContainer__place {
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.addAlertContainer__date {
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.5);
-    margin-top: .2rem;
-}
-
-.addAlertContainer__form {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    max-width: 500px;
-    margin-top: 1.5rem;
-    row-gap: .8rem;
-    align-items: center;
-}
-
-.addAlertContainer__input {
-    outline: none;
-    width: 100%;
-    background-color: #F4F1DE;
-    padding: .4rem;
-    border-radius: 2rem;
-    border: 1px solid #000;
-}
-
-.addAlertContainer__textArea {
-    width: 100%;
-    outline: none;
-    background-color: #F4F1DE;
-    padding: .4rem;
-    border-radius: 1rem;
-    border: 1px solid #000;
-    resize: none;
-}
-
-.addAlertContainer__button {
-    cursor: pointer;
-    padding: .6rem;
-    width: 50%;
-    border-radius: 2rem;
-    border: 1px solid #000;
-    background-color: #E05F5F;
-    color: #fff;
-    font-weight: bold;
+.alertContainer__date {
+    color: rgba(255, 255, 255, 0.5);
 }
